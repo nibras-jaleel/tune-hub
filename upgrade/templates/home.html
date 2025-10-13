@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home | TuneHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex items-center justify-center font-sans relative">
+
+  <!-- Background Image -->
+  <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1950&q=80')] bg-cover bg-center"></div>
+
+  <!-- Overlay -->
+  <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/80 to-black/90"></div>
+
+  <!-- Home Card -->
+  <div class="relative z-10 bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl w-full max-w-3xl p-10 border border-white/20 animate-fadeIn text-center">
+    
+    <!-- Heading -->
+    <h1 class="text-4xl font-extrabold text-blue-400 tracking-wide drop-shadow-lg mb-4">
+      Welcome to TuneHub
+    </h1>
+    <p class="text-gray-300 text-lg mb-8">
+      Your one-stop platform for virtual vehicle tuning and performance upgrades.
+    </p>
+
+    <!-- Buttons -->
+    <div class="flex justify-center space-x-6">
+      <a href="{% url 'signup' %}" 
+         class="px-6 py-3 bg-green-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-lg transition">
+        Get Started
+      </a>
+      <a href="{% url 'login' %}" 
+         class="px-6 py-3 bg-gray-800 hover:bg-blue-700 text-gray-200 font-semibold rounded-lg shadow-lg transition">
+        Login
+      </a>
+      <a href="{% url 'vehicles' %}" 
+         class="px-6 py-3 bg-green-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-lg transition">
+        Explore Vehicles
+      </a>
+    </div>
+  </div>
+
+  <!-- Animation -->
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeIn {
+      animation: fadeIn 1s ease-out;
+    }
+  </style>
+
+</body>
+</html>

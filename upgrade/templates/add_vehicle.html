@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Vehicle | TuneHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex items-center justify-center font-sans relative">
+
+  <!-- Background Image -->
+  <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1950&q=80')] bg-cover bg-center"></div>
+
+  <!-- Overlay -->
+  <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/80 to-black/90"></div>
+
+  <!-- Add Vehicle Card -->
+  <div class="relative z-10 bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl w-full max-w-md p-8 border border-white/20 animate-fadeIn">
+    
+    <!-- Heading -->
+    <h1 class="text-3xl font-extrabold text-center mb-6 text-blue-400 tracking-wide drop-shadow-lg">
+        Add Vehicle
+    </h1>
+
+    <!-- Form -->
+    <form method="POST" class="space-y-6">
+      {% csrf_token %}
+
+      <!-- Brand -->
+      <div>
+        <label for="brand" class="block text-sm font-medium text-gray-200 mb-1">Brand</label>
+        <input type="text" name="brand" id="brand" required
+          class="w-full px-4 py-2 rounded-lg bg-gray-900/50 border border-gray-700 
+                 focus:ring-2 focus:ring-blue-500 text-white">
+      </div>
+
+      <!-- Name -->
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-200 mb-1">Name</label>
+        <input type="text" name="name" id="name" required
+          class="w-full px-4 py-2 rounded-lg bg-gray-900/50 border border-gray-700 
+                 focus:ring-2 focus:ring-blue-500 text-white">
+      </div>
+
+      <!-- Type -->
+      <div>
+        <label for="type" class="block text-sm font-medium text-gray-200 mb-1">Type</label>
+        <select name="type" id="type" required
+          class="w-full px-4 py-2 rounded-lg bg-gray-900/50 border border-gray-700 
+                 focus:ring-2 focus:ring-blue-500 text-white">
+          <option value="">-- Select Type --</option>
+          <option value="car">Car</option>
+          <option value="bike">Bike</option>
+          <option value="truck">Truck</option>
+        </select>
+      </div>
+
+      <!-- Base HP -->
+      <div>
+        <label for="base_hp" class="block text-sm font-medium text-gray-200 mb-1">Base Horsepower (HP)</label>
+        <input type="number" name="base_hp" id="base_hp" required
+          class="w-full px-4 py-2 rounded-lg bg-gray-900/50 border border-gray-700 
+                 focus:ring-2 focus:ring-blue-500 text-white">
+      </div>
+
+      <!-- Base Torque -->
+      <div>
+        <label for="base_torque" class="block text-sm font-medium text-gray-200 mb-1">Base Torque</label>
+        <input type="number" name="base_torque" id="base_torque" required
+          class="w-full px-4 py-2 rounded-lg bg-gray-900/50 border border-gray-700 
+                 focus:ring-2 focus:ring-blue-500 text-white">
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit"
+        class="w-full bg-blue-500 hover:bg-blue-600 transition text-white font-bold py-2 px-4 rounded-lg shadow-lg">
+        + Add Vehicle
+      </button>
+    </form>
+
+    <!-- Back to Dashboard -->
+    <p class="text-center text-gray-400 mt-6 text-sm">
+      ← <a href="{% url 'user_dashboard' %}" class="text-blue-400 hover:underline">Back to Dashboard</a>
+    </p>
+  </div>
+
+  <!-- Animation -->
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeIn {
+      animation: fadeIn 1s ease-out;
+    }
+  </style>
+
+</body>
+</html>

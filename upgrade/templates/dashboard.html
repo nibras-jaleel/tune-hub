@@ -1,0 +1,266 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | TuneHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/scrollreveal"></script>
+  
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeIn {
+      animation: fadeIn 1s ease-out;
+    }
+
+    .glow-btn {
+      box-shadow: 0 0 15px rgba(34, 211, 238, 0.4), 0 0 30px rgba(34, 211, 238, 0.2);
+      transition: all 0.3s ease;
+    }
+    .glow-btn:hover {
+      box-shadow: 0 0 20px rgba(34, 211, 238, 0.8), 0 0 40px rgba(34, 211, 238, 0.4);
+      transform: scale(1.05);
+    }
+
+    .stat-card {
+      transition: transform 0.3s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans relative">
+
+  <!-- Background Layers -->
+  <div class="absolute top-0 left-0 right-0 h-[50vh] bg-[url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1950&q=80')] bg-cover bg-center"></div>
+  <div class="absolute top-[50vh] left-0 right-0 h-[50vh] bg-[url('https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1950&q=80')] bg-cover bg-center"></div>
+  <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/85 to-black/90"></div>
+
+  <!-- Navbar -->
+  <nav class="relative z-10 w-full bg-white/10 backdrop-blur-md border-b border-white/20">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+      <h1 class="text-2xl md:text-3xl font-extrabold tracking-wide text-cyan-400 drop-shadow-lg">
+        TuneHub
+      </h1>
+      <div class="flex items-center space-x-6">
+        <div class="hidden md:flex space-x-6 text-white">
+          <a href="{% url 'user_dashboard' %}" class="hover:text-cyan-400 transition">Home</a>
+          <a href="{% url 'vehicles' %}" class="hover:text-cyan-400 transition">Vehicles</a>
+          <a href="{% url 'tune' %}" class="hover:text-cyan-400 transition">Tune</a>
+          <a href="{% url 'user_dashboard' %}" class="hover:text-cyan-400 transition">Dashboard</a>
+          <a href="{% url 'profile' %}" class="hover:text-cyan-400 transition">Profile</a>
+        </div>
+        <div class="flex items-center space-x-4">
+          <span class="text-white">👤 {{ request.user.username }}</span>
+          <a href="{% url 'logout' %}" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
+            Logout
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <section class="relative z-10 flex-1 w-full py-12 px-4">
+    <div class="max-w-7xl mx-auto">
+
+      <!-- Welcome Section -->
+      <div class="text-center mb-12 animate-fadeIn">
+        <h2 class="text-4xl md:text-5xl font-extrabold text-cyan-400 mb-3">
+          Welcome Back, {{ request.user.username }}! 
+        </h2>
+        <p class="text-gray-300 text-lg">
+          Here's an overview of your vehicle tuning journey
+        </p>
+      </div>
+
+      <!-- Statistics Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        
+        <!-- Total Vehicles Card -->
+        <div class="stat-card bg-gradient-to-br from-blue-500/20 to-blue-700/20 border border-blue-400/30 rounded-xl p-6 backdrop-blur-lg">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-300 text-sm mb-1">Total Vehicles</p>
+              <p class="text-4xl font-extrabold text-white">{{ total_vehicles }}</p>
+            </div>
+            <div class="text-5xl"></div>
+          </div>
+        </div>
+
+        <!-- Total Simulations Card -->
+        <div class="stat-card bg-gradient-to-br from-purple-500/20 to-purple-700/20 border border-purple-400/30 rounded-xl p-6 backdrop-blur-lg">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-300 text-sm mb-1">Total Tunes</p>
+              <p class="text-4xl font-extrabold text-white">{{ total_simulations }}</p>
+            </div>
+            <div class="text-5xl"></div>
+          </div>
+        </div>
+
+        <!-- Most Powerful Card -->
+        <div class="stat-card bg-gradient-to-br from-red-500/20 to-red-700/20 border border-red-400/30 rounded-xl p-6 backdrop-blur-lg">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-300 text-sm mb-1">Max Horsepower</p>
+              <p class="text-4xl font-extrabold text-white">
+                {% if most_powerful %}{{ most_powerful.new_horsepower }}{% else %}0{% endif %}
+              </p>
+            </div>
+            <div class="text-5xl"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Vehicles Section -->
+      <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 mb-8">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl md:text-3xl font-bold text-cyan-400">My Vehicles</h2>
+          <a href="{% url 'add_vehicle' %}" 
+             class="bg-cyan-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-cyan-600 transition glow-btn text-sm md:text-base">
+            + Add Vehicle
+          </a>
+        </div>
+        
+        {% if vehicles %}
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% for vehicle in vehicles %}
+              <div class="bg-gray-900/40 p-5 rounded-lg border border-white/10 hover:border-cyan-400/50 transition">
+                <div class="flex items-center justify-between mb-3">
+                  <h3 class="text-lg font-semibold text-white">{{ vehicle.name }}</h3>
+                  <span class="text-3xl">
+                    {% if vehicle.type == 'sedan' %}
+                    {% elif vehicle.type == 'suv' %}
+                    {% elif vehicle.type == 'sports' %}
+                    {% elif vehicle.type == 'truck' %}
+                    {% else %}
+                    {% endif %}
+                  </span>
+                </div>
+                <div class="space-y-2">
+                  <div class="flex justify-between text-sm">
+                    <span class="text-gray-400">Type:</span>
+                    <span class="text-cyan-300 capitalize">{{ vehicle.type }}</span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span class="text-gray-400">Base HP:</span>
+                    <span class="text-cyan-300">{{ vehicle.base_hp }}</span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span class="text-gray-400">Base Torque:</span>
+                    <span class="text-cyan-300">{{ vehicle.base_torque }} Nm</span>
+                  </div>
+                </div>
+                <a href="{% url 'tune' %}" 
+                   class="block mt-4 bg-cyan-500 text-white text-center py-2 rounded-lg hover:bg-cyan-600 transition font-semibold">
+                  Tune This Vehicle
+                </a>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <!-- Empty State -->
+          <div class="text-center py-12">
+            <div class="text-6xl mb-4"></div>
+            <h3 class="text-2xl font-bold text-white mb-2">No Vehicles Yet</h3>
+            <p class="text-gray-300 mb-6">You haven't added any vehicles yet. Start building your collection!</p>
+            <a href="{% url 'add_vehicle' %}" 
+               class="inline-block bg-cyan-500 text-white font-semibold py-3 px-8 rounded-lg hover:bg-cyan-600 transition glow-btn">
+                Add Your First Vehicle
+            </a>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Simulation Results Section -->
+      <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl md:text-3xl font-bold text-cyan-400">Recent Tuning History</h2>
+          <a href="{% url 'tune' %}" 
+             class="bg-purple-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-purple-600 transition text-sm md:text-base">
+            🔧 Tune Now
+          </a>
+        </div>
+        
+        {% if simulation_results %}
+          <div class="space-y-3">
+            {% for result in simulation_results %}
+              <div class="bg-gray-900/40 p-5 rounded-lg border border-white/10 hover:border-cyan-400/30 transition">
+                <div class="flex flex-col md:flex-row justify-between md:items-center gap-3">
+                  <div class="flex-1">
+                    <h3 class="text-white font-semibold text-lg mb-1">{{ result.vehicle.name }}</h3>
+                    <p class="text-gray-400 text-sm">
+                      <span class="inline-block mr-4">{{ result.created_at|date:"M d, Y" }}</span>
+                      <span class="inline-block">{{ result.created_at|time:"g:i A" }}</span>
+                    </p>
+                  </div>
+                  <div class="flex gap-6 text-center">
+                    <div class="bg-red-500/20 border border-red-400/30 rounded-lg px-4 py-2">
+                      <p class="text-red-300 text-xs mb-1">Horsepower</p>
+                      <p class="text-red-400 font-bold text-xl">{{ result.new_horsepower }}</p>
+                    </div>
+                    <div class="bg-purple-500/20 border border-purple-400/30 rounded-lg px-4 py-2">
+                      <p class="text-purple-300 text-xs mb-1">Torque</p>
+                      <p class="text-purple-400 font-bold text-xl">{{ result.new_torque }}</p>
+                    </div>
+                    <div class="bg-green-500/20 border border-green-400/30 rounded-lg px-4 py-2">
+                      <p class="text-green-300 text-xs mb-1">Efficiency</p>
+                      <p class="text-green-400 font-bold text-xl">{{ result.new_efficiency }}%</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+          <!-- View All Link -->
+          {% if total_simulations > 10 %}
+          <div class="mt-6 text-center">
+            <a href="#" class="text-cyan-400 hover:text-cyan-300 font-semibold">
+              View All Tuning History →
+            </a>
+          </div>
+          {% endif %}
+
+        {% else %}
+          <!-- Empty State -->
+          <div class="text-center py-12">
+            <div class="text-6xl mb-4">📊</div>
+            <h3 class="text-2xl font-bold text-white mb-2">No Tuning History</h3>
+            <p class="text-gray-300 mb-6">You haven't tuned any vehicles yet. Start now and see the magic happen!</p>
+            <a href="{% url 'tune' %}" 
+               class="inline-block bg-cyan-500 text-white font-semibold py-3 px-8 rounded-lg hover:bg-cyan-600 transition glow-btn">
+                Start Tuning
+            </a>
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="relative z-10 mt-auto">
+    <div class="relative h-48 bg-[url('https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1950&q=80')] bg-cover bg-center">
+      <div class="absolute inset-0 bg-black/70 flex items-center justify-center">
+        <p class="text-gray-300 text-sm">© 2025 TuneHub. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ScrollReveal Animations -->
+  <script>
+    ScrollReveal().reveal('.animate-fadeIn', { delay: 200, distance: '20px', origin: 'bottom', duration: 900 });
+    ScrollReveal().reveal('.stat-card', { delay: 300, distance: '30px', origin: 'bottom', duration: 800, interval: 100 });
+  </script>
+
+</body>
+</html>

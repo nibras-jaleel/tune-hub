@@ -1,0 +1,172 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tuning Results | TuneHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/scrollreveal"></script>
+
+  <style>
+    .btn-glow {
+      transition: all 0.3s ease-in-out;
+      box-shadow: 0 0 0px rgba(59, 130, 246, 0.7);
+    }
+    .btn-glow:hover {
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.9),
+                  0 0 40px rgba(59, 130, 246, 0.6),
+                  0 0 60px rgba(59, 130, 246, 0.4);
+      transform: scale(1.05);
+    }
+
+    .stat-card {
+      transition: transform 0.3s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-10px);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans relative">
+
+  <!-- Background Layers -->
+  <div class="absolute top-0 left-0 right-0 h-[40vh] bg-[url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1950&q=80')] bg-cover bg-center"></div>
+  <div class="absolute top-[40vh] left-0 right-0 h-[40vh] bg-[url('https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1950&q=80')] bg-cover bg-center"></div>
+  <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/85 to-black/90"></div>
+
+  <!-- Navbar -->
+  <nav class="relative z-10 w-full bg-white/10 backdrop-blur-md border-b border-white/20 animate-fade-down">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+      <h1 class="text-2xl md:text-3xl font-extrabold tracking-wide text-blue-400 drop-shadow-lg">
+        TuneHub
+      </h1>
+      <div class="space-x-6 text-white">
+        <a href="{% url 'home' %}" class="hover:text-blue-400 transition">Home</a>
+        <a href="{% url 'vehicles' %}" class="hover:text-blue-400 transition">Vehicles</a>
+        <a href="{% url 'tune' %}" class="hover:text-blue-400 transition">Tune</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <section class="relative z-10 flex-1 w-full flex flex-col items-center pt-32 pb-16 px-4">
+    <div class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 w-full max-w-5xl p-10 animate-fadeIn">
+
+      <!-- Success Message -->
+      <div class="text-center mb-12 animate-fade-up">
+        <div class="inline-block p-4 bg-green-500/20 border border-green-400 rounded-full mb-6">
+          <svg class="w-16 h-16 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+        <h2 class="text-4xl md:text-5xl font-extrabold text-blue-400 mb-4">
+          Tuning Complete!
+        </h2>
+        <p class="text-gray-200 text-lg">
+          Your <span class="text-blue-400 font-semibold">{{ result.vehicle.name }}</span> has been successfully tuned.
+        </p>
+      </div>
+
+      <!-- Performance Stats -->
+      <div class="grid md:grid-cols-3 gap-6 mb-12">
+        
+        <!-- Horsepower Card -->
+        <div class="stat-card bg-gradient-to-br from-red-500/20 to-red-700/20 border border-red-400/30 p-6 rounded-xl text-center animate-fade-left">
+          <div class="text-red-400 text-5xl mb-2"></div>
+          <h3 class="text-xl font-bold text-red-300 mb-2">Horsepower</h3>
+          <p class="text-4xl font-extrabold text-white mb-1">{{ result.new_horsepower }}</p>
+          <p class="text-gray-300 text-sm">HP</p>
+          <div class="mt-4 pt-4 border-t border-red-400/30">
+            <p class="text-gray-400 text-xs">Base: {{ result.vehicle.base_hp }} HP</p>
+            <p class="text-green-400 text-sm font-semibold">+{{ result.new_horsepower|add:"-"|add:result.vehicle.base_hp }} HP</p>
+          </div>
+        </div>
+
+        <!-- Torque Card -->
+        <div class="stat-card bg-gradient-to-br from-purple-500/20 to-purple-700/20 border border-purple-400/30 p-6 rounded-xl text-center animate-fade-up">
+          <div class="text-purple-400 text-5xl mb-2"></div>
+          <h3 class="text-xl font-bold text-purple-300 mb-2">Torque</h3>
+          <p class="text-4xl font-extrabold text-white mb-1">{{ result.new_torque }}</p>
+          <p class="text-gray-300 text-sm">Nm</p>
+          <div class="mt-4 pt-4 border-t border-purple-400/30">
+            <p class="text-gray-400 text-xs">Base: {{ result.vehicle.base_torque }} Nm</p>
+            <p class="text-green-400 text-sm font-semibold">+{{ result.new_torque|add:"-"|add:result.vehicle.base_torque }} Nm</p>
+          </div>
+        </div>
+
+        <!-- Efficiency Card -->
+        <div class="stat-card bg-gradient-to-br from-green-500/20 to-green-700/20 border border-green-400/30 p-6 rounded-xl text-center animate-fade-right">
+          <div class="text-green-400 text-5xl mb-2">💨</div>
+          <h3 class="text-xl font-bold text-green-300 mb-2">Efficiency</h3>
+          <p class="text-4xl font-extrabold text-white mb-1">{{ result.new_efficiency }}</p>
+          <p class="text-gray-300 text-sm">%</p>
+          <div class="mt-4 pt-4 border-t border-green-400/30">
+            <p class="text-gray-400 text-xs">Optimal Performance</p>
+            <p class="text-green-400 text-sm font-semibold">Rating: {% if result.new_efficiency >= 85 %}Excellent{% elif result.new_efficiency >= 75 %}Great{% else %}Good{% endif %}</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Vehicle Info -->
+      <div class="bg-gray-900/40 border border-white/10 rounded-xl p-6 mb-8 animate-zoom-in">
+        <h3 class="text-2xl font-bold text-blue-300 mb-4 text-center">Vehicle Details</h3>
+        <div class="grid md:grid-cols-2 gap-4 text-gray-300">
+          <div class="flex justify-between p-3 bg-gray-800/30 rounded-lg">
+            <span class="font-semibold">Vehicle Name:</span>
+            <span>{{ result.vehicle.name }}</span>
+          </div>
+          <div class="flex justify-between p-3 bg-gray-800/30 rounded-lg">
+            <span class="font-semibold">Vehicle Type:</span>
+            <span>{{ result.vehicle.type }}</span>
+          </div>
+          <div class="flex justify-between p-3 bg-gray-800/30 rounded-lg">
+            <span class="font-semibold">Tuned On:</span>
+            <span>{{ result.created_at|date:"M d, Y" }}</span>
+          </div>
+          <div class="flex justify-between p-3 bg-gray-800/30 rounded-lg">
+            <span class="font-semibold">Time:</span>
+            <span>{{ result.created_at|time:"g:i A" }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col md:flex-row gap-4 justify-center animate-bounce-in">
+        <a href="{% url 'tune' %}" class="btn-glow bg-blue-500 px-8 py-3 rounded-xl text-lg font-semibold text-center shadow-lg hover:bg-blue-600 transition">
+          Tune Another Vehicle
+        </a>
+        <a href="{% url 'user_dashboard' %}" class="btn-glow bg-gray-700 px-8 py-3 rounded-xl text-lg font-semibold text-center shadow-lg hover:bg-gray-600 transition">
+          Back to Dashboard
+        </a>
+        <a href="{% url 'vehicles' %}" class="btn-glow bg-green-600 px-8 py-3 rounded-xl text-lg font-semibold text-center shadow-lg hover:bg-green-700 transition">
+          View All Vehicles
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="relative z-10 mt-auto">
+    <div class="relative h-64 bg-[url('https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1950&q=80')] bg-cover bg-center">
+      <div class="absolute inset-0 bg-black/70 flex items-center justify-center">
+        <p class="text-gray-300 text-sm">© 2025 TuneHub. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ScrollReveal Animations -->
+  <script>
+    ScrollReveal().reveal('.animate-fadeIn', { delay: 200, distance: '20px', origin: 'bottom', duration: 900 });
+    ScrollReveal().reveal('.animate-fade-up', { delay: 300, distance: '40px', origin: 'bottom', duration: 900 });
+    ScrollReveal().reveal('.animate-fade-left', { delay: 400, distance: '50px', origin: 'left', duration: 900 });
+    ScrollReveal().reveal('.animate-fade-right', { delay: 600, distance: '50px', origin: 'right', duration: 900 });
+    ScrollReveal().reveal('.animate-zoom-in', { delay: 500, scale: 0.85, duration: 1000 });
+    ScrollReveal().reveal('.animate-bounce-in', { delay: 700, distance: '20px', origin: 'bottom', duration: 1000, scale: 0.9 });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile | TuneHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex items-center justify-center font-sans relative">
+
+  <!-- Background -->
+  <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1950&q=80')] bg-cover bg-center"></div>
+  <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/80 to-black/90"></div>
+
+  <div class="relative z-10 bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl w-full max-w-lg p-8 border border-white/20 animate-fadeIn">
+
+    <h1 class="text-3xl font-extrabold text-center mb-6 text-blue-400 drop-shadow-lg">
+      My Profile
+    </h1>
+
+    <div class="space-y-4 text-gray-200">
+      <p><strong>Username:</strong> {{ user.username }}</p>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      <p><strong>Full Name:</strong> {{ user.username }}</p>
+    </div>
+
+    <div class="flex justify-between mt-8">
+      <a href="{% url 'user_dashboard' %}" class="bg-blue-500 hover:bg-blue-600 transition text-white font-bold py-2 px-4 rounded-lg shadow-lg">
+        Back to Dashboard
+      </a>
+      <!-- Logout Button (POST form) -->
+<form action="{% url 'logout' %}" method="post" class="inline">
+  {% csrf_token %}
+  <button type="submit" 
+          class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg text-white font-semibold transition">
+    Logout
+  </button>
+</form>
+    </div>
+
+  </div>
+
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeIn { animation: fadeIn 1s ease-out; }
+  </style>
+
+</body>
+</html>

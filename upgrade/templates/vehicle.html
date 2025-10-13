@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vehicles | TuneHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex items-center justify-center font-sans relative">
+
+  <!-- Background Image -->
+  <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1950&q=80')] bg-cover bg-center"></div>
+
+  <!-- Overlay -->
+  <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/80 to-black/90"></div>
+
+  <!-- Vehicles Card -->
+  <div class="relative z-10 bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl w-full max-w-4xl p-8 border border-white/20 animate-fadeIn">
+    
+    <!-- Heading -->
+    <h1 class="text-3xl font-extrabold text-center mb-6 text-cyan-400 tracking-wide drop-shadow-lg">
+      My Vehicles
+    </h1>
+
+    <!-- Vehicle List -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {% for vehicle in vehicles %}
+        <div class="bg-white/10 border border-white/20 rounded-xl p-6 hover:scale-105 transform transition duration-300">
+          <h2 class="text-xl font-bold text-white mb-2">{{ vehicle.year }} {{ vehicle.make }} {{ vehicle.model }}</h2>
+          <p class="text-gray-300 mb-1">Engine: {{ vehicle.engine }}</p>
+          <p class="text-gray-300 mb-1">Horsepower: {{ vehicle.horsepower }} HP</p>
+          <p class="text-gray-300 mb-1">Torque: {{ vehicle.torque }} Nm</p>
+          <p class="text-gray-300">Efficiency: {{ vehicle.efficiency }} L/100km</p>
+        </div>
+      {% empty %}
+        <p class="text-gray-300 text-center col-span-2">No vehicles added yet.</p>
+      {% endfor %}
+    </div>
+
+    <!-- Add Vehicle Button -->
+    <div class="mt-8 text-center">
+      <a href="{% url 'tune' %}" 
+         class="relative inline-block bg-cyan-500 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition duration-300 hover:bg-cyan-600 glow-btn">
+         Add / Tune Vehicle
+      </a>
+    </div>
+  </div>
+
+  <!-- Custom Glow Effect -->
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeIn {
+      animation: fadeIn 1s ease-out;
+    }
+
+    /* Neon Glow Effect */
+    .glow-btn {
+      box-shadow: 0 0 15px rgba(34, 211, 238, 0.231), 0 0 30px rgba(34, 211, 238, 0.6);
+    }
+    .glow-btn:hover {
+      box-shadow: 0 0 20px rgba(34, 211, 238, 1), 0 0 40px rgba(34, 211, 238, 0.311);
+    }
+  </style>
+
+</body>
+</html>

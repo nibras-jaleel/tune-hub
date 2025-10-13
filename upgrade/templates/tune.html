@@ -1,0 +1,175 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tune | TuneHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/scrollreveal"></script>
+
+  <style>
+    /* Glow animation for buttons */
+    .btn-glow {
+      transition: all 0.3s ease-in-out;
+      box-shadow: 0 0 0px rgba(59, 130, 246, 0.7);
+    }
+    .btn-glow:hover {
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.9),
+                  0 0 40px rgba(59, 130, 246, 0.6),
+                  0 0 60px rgba(59, 130, 246, 0.4);
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans relative">
+
+  <!-- Background Layers -->
+  <div class="absolute top-0 left-0 right-0 h-[40vh] bg-[url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1950&q=80')] bg-cover bg-center"></div>
+  <div class="absolute top-[40vh] left-0 right-0 h-[40vh] bg-[url('https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1950&q=80')] bg-cover bg-center"></div>
+  <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/85 to-black/90"></div>
+
+  <!-- Navbar -->
+  <nav class="relative z-10 w-full bg-white/10 backdrop-blur-md border-b border-white/20 animate-fade-down">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+      <h1 class="text-2xl md:text-3xl font-extrabold tracking-wide text-blue-400 drop-shadow-lg">
+        TuneHub
+      </h1>
+      <div class="space-x-6 text-white">
+        <a href="{% url 'user_dashboard' %}" class="hover:text-blue-400 transition">Home</a>
+        <a href="{% url 'vehicles' %}" class="hover:text-blue-400 transition">Vehicles</a>
+        <a href="{% url 'tune' %}" class="text-blue-400 font-semibold">Tune</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <section class="relative z-10 flex-1 w-full flex flex-col items-center pt-32 pb-16 px-4">
+    <div class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 w-full max-w-5xl p-10 animate-fadeIn">
+
+      <!-- Heading -->
+      <h2 class="text-4xl md:text-5xl font-extrabold text-center text-blue-400 mb-6 animate-fade-up">
+        Tune Your Vehicle
+      </h2>
+
+      {% if not selected_vehicle %}
+        <!-- Step 1: Vehicle Selection -->
+        <p class="text-gray-200 text-center mb-12 animate-fade-up-delay">
+          Select your vehicle to begin tuning.
+        </p>
+
+        <form method="POST">
+          {% csrf_token %}
+          <div class="bg-gray-900/40 p-6 rounded-xl border border-white/10 text-center">
+            <h3 class="text-xl font-bold mb-4 text-blue-300">Select Vehicle</h3>
+            <select name="vehicle" required class="w-full p-3 rounded-lg bg-gray-800/70 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500">
+              <option value="" disabled selected>-- Choose Your Vehicle --</option>
+              {% for v in vehicles %}
+                <option value="{{ v.id }}">{{ v.name }} ({{ v.type }})</option>
+              {% endfor %}
+            </select>
+
+            <button type="submit" name="select_vehicle" class="btn-glow bg-blue-500 mt-6 px-10 py-3 rounded-xl text-lg font-semibold shadow-lg hover:bg-blue-600 transition">
+              Start Tuning
+            </button>
+          </div>
+        </form>
+
+      {% else %}
+        <!-- Step 2: Tuning Options -->
+        <p class="text-gray-200 text-center mb-8 animate-fade-up-delay">
+          Tuning options for <span class="text-blue-400 font-semibold">{{ selected_vehicle.name }}</span>
+        </p>
+
+        <form method="POST" class="grid md:grid-cols-2 gap-8">
+          {% csrf_token %}
+          <input type="hidden" name="vehicle_id" value="{{ selected_vehicle.id }}">
+
+          <!-- Engine -->
+          <div class="bg-gray-900/40 p-6 rounded-xl border border-white/10 animate-fade-left">
+            <h3 class="text-xl font-bold mb-4 text-blue-300">Engine Upgrade</h3>
+            <select name="engine" class="w-full p-3 rounded-lg bg-gray-800/70 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500">
+              <option value="stock">Stock Engine</option>
+              <option value="stage1">Stage 1 Turbo</option>
+              <option value="stage2">Stage 2 Turbo</option>
+              <option value="v8">V8 Swap</option>
+            </select>
+          </div>
+
+          <!-- Exhaust -->
+          <div class="bg-gray-900/40 p-6 rounded-xl border border-white/10 animate-fade-right">
+            <h3 class="text-xl font-bold mb-4 text-blue-300">Exhaust System</h3>
+            <select name="exhaust" class="w-full p-3 rounded-lg bg-gray-800/70 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500">
+              <option value="stock">Stock Exhaust</option>
+              <option value="performance">Performance Exhaust</option>
+              <option value="racing">Racing Exhaust</option>
+            </select>
+          </div>
+
+          <!-- Suspension -->
+          <div class="bg-gray-900/40 p-6 rounded-xl border border-white/10 animate-fade-left">
+            <h3 class="text-xl font-bold mb-4 text-blue-300">Suspension</h3>
+            <select name="suspension" class="w-full p-3 rounded-lg bg-gray-800/70 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500">
+              <option value="standard">Standard Suspension</option>
+              <option value="sport">Sport Suspension</option>
+              <option value="race">Race Suspension</option>
+            </select>
+          </div>
+
+          <!-- Tires -->
+          <div class="bg-gray-900/40 p-6 rounded-xl border border-white/10 animate-fade-right">
+            <h3 class="text-xl font-bold mb-4 text-blue-300">Tires</h3>
+            <select name="tires" class="w-full p-3 rounded-lg bg-gray-800/70 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500">
+              <option value="street">Street Tires</option>
+              <option value="sport">Sport Tires</option>
+              <option value="slick">Slick Tires</option>
+            </select>
+          </div>
+
+          <!-- Tune Button -->
+          <div class="md:col-span-2 mt-6 text-center animate-bounce-in">
+            <button type="submit" name="tune_vehicle" class="btn-glow bg-blue-500 px-10 py-3 rounded-xl text-lg font-semibold shadow-lg hover:bg-blue-600 transition">
+              Apply Upgrades
+            </button>
+          </div>
+        </form>
+
+        {% if result %}
+        <!-- Results Section -->
+        <div class="mt-16 p-6 bg-gray-900/50 border border-white/10 rounded-xl shadow-lg text-center animate-zoom-in">
+          <h3 class="text-2xl font-bold text-blue-400 mb-4">
+            Performance Results for {{ result.vehicle.name }}
+          </h3>
+          <p class="text-gray-300 mb-2">Horsepower: {{ result.new_horsepower }} HP</p>
+          <p class="text-gray-300 mb-2">Torque: {{ result.new_torque }} Nm</p>
+          <p class="text-gray-300">Efficiency: {{ result.new_efficiency }}%</p>
+        </div>
+        {% endif %}
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="relative z-10 mt-auto">
+    <div class="relative h-64 bg-[url('https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1950&q=80')] bg-cover bg-center">
+      <div class="absolute inset-0 bg-black/70 flex items-center justify-center">
+        <p class="text-gray-300 text-sm">© 2025 TuneHub. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ScrollReveal Animations -->
+  <script>
+    ScrollReveal().reveal('.animate-fadeIn', { delay: 200, distance: '20px', origin: 'bottom', duration: 900 });
+    ScrollReveal().reveal('.animate-fade-up', { delay: 300, distance: '40px', origin: 'bottom', duration: 900 });
+    ScrollReveal().reveal('.animate-fade-up-delay', { delay: 500, distance: '40px', origin: 'bottom', duration: 1000 });
+    ScrollReveal().reveal('.animate-fade-left', { delay: 200, distance: '50px', origin: 'left', duration: 900 });
+    ScrollReveal().reveal('.animate-fade-right', { delay: 200, distance: '50px', origin: 'right', duration: 900 });
+    ScrollReveal().reveal('.animate-bounce-in', { delay: 600, distance: '20px', origin: 'bottom', duration: 1000, scale: 0.9 });
+    ScrollReveal().reveal('.animate-zoom-in', { delay: 400, scale: 0.85, duration: 1000 });
+    ScrollReveal().reveal('.animate-fade-down', { delay: 200, distance: '40px', origin: 'top', duration: 900 });
+  </script>
+
+</body>
+</html>
