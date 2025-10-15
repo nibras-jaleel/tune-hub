@@ -20,7 +20,7 @@ SECRET_KEY = os.getenv(
 
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "tunehub.onrender.com"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "tune-hub-5z0e.onrender.com"]
 
 # ---------------------------------------------------------------------
 # ⚙️ APPLICATION CONFIG
